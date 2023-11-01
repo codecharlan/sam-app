@@ -8,5 +8,6 @@ repositories {
 
 dependencies {
     implementation 'com.amazonaws:aws-lambda-java-core:1.2.0'
+    compile 'com.fasterxml.jackson.core:jackson-databind:2.13.1'
     testImplementation 'junit:junit:4.12'
 }

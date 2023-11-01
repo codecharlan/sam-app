@@ -1,6 +1,10 @@
 package com.codecharlan.samapp;
 
 import com.amazonaws.services.apigateway.model.GatewayResponse;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import java.util.List;
 
 public class GatewayResponse {
 
@@ -27,8 +31,8 @@ public class GatewayResponse {
     public int getStatusCode() {
         return statusCode;
     }
-    public static GatewayResponse createGatewayResponse(List<Record> records){
+    public static GatewayResponse createGatewayResponse(List<Record> records) throws JsonProcessingException {
         String body = new ObjectMapper().writeValueAsString(records);
-        return new GatewayResponse(200, body)
+        return new GatewayResponse(body, 200);
     }
 }
