@@ -1,0 +1,59 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  SAM-App
+
+  A Simple SAM Java application that connects to RDS inside a private VPC
+
+# More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
+Globals:
+  Function:
+    Timeout: 20
+
+    Tracing: Active
+  Api:
+    TracingEnabled: true
+Resources:
+  MyRDBMS:
+    Type: AWS::RDS::DBInstance
+    Properties:
+      Engine: mysql
+      DBInstanceIdentifier: my-rds-db
+      DBInstanceClass: db.t2.micro
+      AllocatedStorage: 20
+      MasterUsername: rds-username
+      MasterUserPassword: rds-password
+
+  LambdaFunction:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      CodeUri: samapp/build
+      Handler: com.codecharlan.samapp::handleRequest
+      Runtime: java11
+      Architectures:
+      - x86_64
+      MemorySize: 512
+      Environment: # More info about Env Vars: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#environment-object
+        Variables:
+          RDS_HOST: !Ref MyRDSDB.Endpoint.Address
+          RDS_PORT: !Ref MyRDSDB.Endpoint.Port
+          RDS_USERNAME: rds-username
+          RDS_PASSWORD: rds-password
+
+  ApplicationResourceGroup:
+    Type: AWS::ResourceGroups::Group
+    Properties:
+      Name:
+        Fn::Sub: ApplicationInsights-SAM-${AWS::StackName}
+      ResourceQuery:
+        Type: CLOUDFORMATION_STACK_1_0
+  ApplicationInsightsMonitoring:
+    Type: AWS::ApplicationInsights::Application
+    Properties:
+      ResourceGroupName:
+        Ref: ApplicationResourceGroup
+      AutoConfigurationEnabled: 'true'
+Outputs:
+ LambdaFunctionArn:
+   Description: The ARN associated
+   Value: !Ref LambdaFunction
