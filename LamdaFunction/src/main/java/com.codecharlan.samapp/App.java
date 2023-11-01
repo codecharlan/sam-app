@@ -67,8 +67,7 @@ public class App implements RequestHandler<Request, GatewayResponse> {
                     PreparedStatement deleteStatement = conn.prepareStatement("DELETE FROM my_table WHERE id = ?");
                     deleteStatement.setInt(1, record.getId());
                     deleteStatement.executeUpdate();
-                } catch (SQLException e) {
-                    // Handle the exception appropriately
+                } catch (SQLException ignored) {
                 }
                 break;
 
