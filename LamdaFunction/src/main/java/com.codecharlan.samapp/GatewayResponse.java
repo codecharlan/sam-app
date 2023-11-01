@@ -1,6 +1,4 @@
 package com.codecharlan.samapp;
-
-import com.amazonaws.services.apigateway.model.GatewayResponse;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
